@@ -13,9 +13,9 @@ Using | Command line
 yarn | `yarn`
 npm | `npm install`
 
-**3** Setup your configuration file (`gulpfile.config.js`), the ESLint config (`.eslintrc.js`), the Babel config (`.babelrc` < only if you will use Babel, obviously) and be sure that all paths and files are right and ready to be processed
+**3** Setup your configuration file (`gulpfile.config.js`), the ESLint config (`.eslintrc.js`), the Babel config (`.babelrc` only if you will use Babel, obviously) and be sure that all paths and files are right and ready to be processed
 
-<br>
+
 **4** Run!
 
 yarn | Command line
