@@ -103,7 +103,7 @@ const paths = {
 
 - All functions already have an callback to help you work with clear logs about the errors
 
-- The functions doesn't have with the traditional `.pipe` to control the stream, instead of this, I prefer work with `pump()` package. If you want know more about it > https://www.npmjs.com/package/pump
+- The functions doesn't have the traditional `.pipe` to control the stream, instead of this, I prefer work with `pump()` package. If you want know more about it > https://www.npmjs.com/package/pump
 
 #### Autoloader packages
 - You not need require a package every time that you install something new to Gulp work with it!
