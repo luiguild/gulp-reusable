@@ -174,7 +174,7 @@ watch({
 #### Create a production-ready folder structure
 - Gulp will manage the production folder to you.
 
-- **SUGGESTION**
+**SUGGESTION**
 ```
 myApp
     dist
