@@ -1,4 +1,4 @@
-<p align="center"><img src="https://raw.githubusercontent.com/luiguild/gulp-reusable/master/readme-image.png"></p>
+<p align="center"><img src="https://raw.githubusercontent.com/luiguild/gulp-reusable/master/readme-image.png" height="350"></p>
 
 # gulp-reusable
 
