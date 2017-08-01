@@ -1,4 +1,7 @@
+<p align="center"><img src="https://raw.githubusercontent.com/luiguild/gulp-reusable/master/readme-image.png"></p>
+
 # gulp-reusable
+
 A powerful boilerplate to work with Gulp 3.9 with SASS, PUG and ES6+ with reusable tasks.
 
 This project work on a NodeJS 6+ with JS-ES6+ innovations and the parts of the code are packages, it's just require one to use :)
