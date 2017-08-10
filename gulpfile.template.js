@@ -19,35 +19,37 @@ const template = ({
     dest,
     injection,
     reload
-}, cb) => {
-    const env = process.env.NODE_ENV
-    const ext = extension => source.indexOf(extension) !== -1
+}) => {
+    return new Promise((resolve, reject) => {
+        const env = process.env.NODE_ENV
+        const ext = extension => source.indexOf(extension) !== -1
 
-    const stream = [
-        gulp.src(source)
-    ]
+        const stream = [
+            gulp.src(source)
+        ]
 
-    if (ext('.pug')) {
-        stream.push(pug({
-            pretty: true
-        }))
-    }
-
-    if (rename) {
-        stream.push($.rename(rename))
-    }
-
-    stream.push(gulp.dest(dest).on('end', () => {
-        if (injection && env === 'development') {
-            $.runSequence('make:injection')
-        } else {
-            if (reload) {
-                server.hot()
-            }
+        if (ext('.pug')) {
+            stream.push(pug({
+                pretty: false
+            }))
         }
-    }))
 
-    $.pump(stream, cb)
+        if (rename) {
+            stream.push($.rename(rename))
+        }
+
+        stream.push(gulp.dest(dest).on('end', () => {
+            if (injection && env === 'development') {
+                $.runSequence('make:injection')
+            } else {
+                if (reload) {
+                    server.hot()
+                }
+            }
+        }))
+
+        $.pump(stream, resolve)
+    })
 }
 
 module.exports = template

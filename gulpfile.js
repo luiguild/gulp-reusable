@@ -86,7 +86,8 @@ gulp.task('make:css:static', () => {
         concat: 'qtGeneral.css',
         rename: '.min',
         dest: config.files.static.css.dest,
-        injection: true
+        injection: false,
+        reload: true
     })
 })
 
@@ -119,7 +120,8 @@ gulp.task('make:js', () => {
         ],
         rename: '.min',
         dest: config.files.js.dest,
-        injection: true
+        injection: false,
+        reload: true
     })
 })
 
@@ -129,15 +131,18 @@ gulp.task('make:js:static', () => {
         transpiler: 'uglify',
         rename: '.min',
         dest: config.files.static.js.dest,
-        injection: true
+        injection: false,
+        reload: true
     })
 })
 
 gulp.task('copy:static', cb => {
-    $.pump([
-        gulp.src(config.files.static.src),
-        gulp.dest(config.files.static.dest)
-    ], cb)
+    return new Promise((resolve, reject) => {
+        $.pump([
+            gulp.src(config.files.static.src),
+            gulp.dest(config.files.static.dest)
+        ], resolve)
+    })
 })
 
 gulp.task('make:injection', () => {
@@ -163,24 +168,23 @@ gulp.task('make:injection', () => {
 gulp.task('default', ['build'])
 
 gulp.task('serve', () => {
-    $.runSequence('build')
-
-    setTimeout(() => {
-        console.log('Preparing to serve...')
-        $.runSequence('start:watch', 'start:serve')
-    }, 10000)
+    $.runSequence('build', server.start)
 })
 
 gulp.task('build', () => {
-    process.env.NODE_ENV = 'production'
-    $.runSequence(
-        'copy:static',
-        'make:js',
-        'make:js:static',
-        'make:sass',
-        'make:css:static',
-        'make:pug:index',
-        'make:pug:templates',
-        'make:injection'
-    )
+    return new Promise((resolve, reject) => {
+        process.env.NODE_ENV = 'production'
+        $.runSequence(
+            'copy:static',
+            'make:js',
+            'make:js:static',
+            'make:sass',
+            'make:sass:main',
+            'make:css:static',
+            'make:pug:index',
+            'make:pug:templates',
+            'make:injection',
+            resolve
+        )
+    })
 })

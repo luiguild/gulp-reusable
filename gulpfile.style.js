@@ -23,77 +23,80 @@ const style = ({
     dest,
     injection,
     reload
-}, cb) => {
-    const env = process.env.NODE_ENV
-    const ext = extension => source.indexOf(extension) !== -1
-    const fileName = source.toString().split('.').shift().split('/').pop()
-    const finalName = () => {
-        if (rename === '.min') {
-            if (fileName === '*') {
-                if (concat) {
-                    return concat.toString().split('.').shift() + rename + '.css'
+}) => {
+    return new Promise((resolve, reject) => {
+        const env = process.env.NODE_ENV
+        const ext = extension => source.indexOf(extension) !== -1
+        const fileName = source.toString().split('.').shift().split('/').pop()
+        const finalName = () => {
+            if (rename === '.min') {
+                if (fileName === '*') {
+                    if (concat) {
+                        return concat.toString().split('.').shift() + rename + '.css'
+                    } else {
+                        return fileName + rename + '.css'
+                    }
                 } else {
                     return fileName + rename + '.css'
                 }
-            } else {
-                return fileName + rename + '.css'
             }
         }
-    }
 
-    const stream = [
-        gulp.src(source),
-        $.autoprefixer(),
-        $.cssPurge(),
-        $.csscomb(),
-        $.cssbeautify({
-            indent: '   ',
-            openbrace: 'end-of-line',
-            autosemicolon: true
-        }),
-        $.sourcemaps.init(),
-        $.cleanCss({
-            compatibility: 'ie8',
-            keepSpecialComments: 'none',
-            specialComments: 'none',
-            debug: true,
-            removeEmpty: true
-        }, details => {
-            console.log(instant, 'cleanCSS'.bold.cyan)
-            console.log(instant, 'Output: '.magenta + `${finalName() || details.name}`)
-            console.log(instant, 'Original: '.magenta + `${(details.stats.originalSize / 1024).toFixed(2)}kb`)
-            console.log(instant, 'Minified: '.magenta + `${(details.stats.minifiedSize / 1024).toFixed(2)}kb`)
-        })
-    ]
+        const stream = [
+            gulp.src(source),
+            $.autoprefixer(),
+            $.cssPurge(),
+            $.csscomb(),
+            $.cssbeautify({
+                indent: '   ',
+                openbrace: 'end-of-line',
+                autosemicolon: true
+            }),
+            $.sourcemaps.init(),
+            $.cleanCss({
+                compatibility: 'ie8',
+                keepSpecialComments: 'none',
+                specialComments: 'none',
+                debug: true,
+                removeEmpty: true
+            }, details => {
+                console.log(instant, 'cleanCSS'.bold.cyan)
+                console.log(instant, 'Output: '.magenta + `${finalName() || details.name}`)
+                console.log(instant, 'Original: '.magenta + `${(details.stats.originalSize / 1024).toFixed(2)}kb`)
+                console.log(instant, 'Minified: '.magenta + `${(details.stats.minifiedSize / 1024).toFixed(2)}kb`)
+            })
+        ]
 
-    if (ext('.sass') || ext('.scss')) {
-        stream.splice(1, 0, $.sass())
-    } else {
-        if (concat) {
-            stream.splice(1, 0, $.concat(concat))
+        if (ext('.sass') || ext('.scss')) {
+            stream.splice(1, 0, $.sass())
+        } else {
+            if (concat) {
+                stream.splice(1, 0, $.concat(concat))
+            }
         }
-    }
 
-    if (rename === '.min') {
-        stream.push($.rename(path => {
-            path.basename += '.min'
-        }))
-    } else {
-        stream.push($.rename(rename))
-    }
+        if (rename === '.min') {
+            stream.push($.rename(path => {
+                path.basename += '.min'
+            }))
+        } else {
+            stream.push($.rename(rename))
+        }
 
-    stream.push($.sourcemaps.write('.'),
-        gulp.dest(dest).on('end', () => {
-            if (injection && env === 'development') {
-                $.runSequence('make:injection')
-            } else {
-                if (reload) {
-                    server.hot()
+        stream.push($.sourcemaps.write('.'),
+            gulp.dest(dest).on('end', () => {
+                if (injection && env === 'development') {
+                    $.runSequence('make:injection')
+                } else {
+                    if (reload) {
+                        server.hot()
+                    }
                 }
-            }
-        }))
+            })
+        )
 
-    $.pump(stream, cb)
+        $.pump(stream, resolve)
+    })
 }
 
 module.exports = style
