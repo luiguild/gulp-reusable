@@ -58,13 +58,13 @@ gulp.task('start:watch', () => {
     })
 
     watch({
-        source: config.files.static.src,
-        task: 'copy'
+        source: config.files.static.js.src,
+        task: 'make:js:static'
     })
 
     watch({
-        source: config.files.static.js.src,
-        task: 'make:js:static'
+        source: config.files.static.src,
+        task: 'copy:static'
     })
 })
 
